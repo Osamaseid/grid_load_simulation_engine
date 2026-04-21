@@ -1,0 +1,297 @@
+# VoltStream API HTTP Client Test Suite
+# Run in PyCharm: right-click > Run 'Http Client'
+# Prerequisites: Start server with: uvicorn app.main:app --reload
+
+@baseUrl = http://localhost:8000/api
+
+# ===========================================
+# Health Check
+# ===========================================
+GET http://localhost:8000/health
+
+###
+# GET http://localhost:8000/health
+
+# ===========================================
+# Simulation Endpoint Tests
+# ===========================================
+# Test 1: Basic feasibility (three-phase, 208V)
+POST {{baseUrl}}/simulate
+Content-Type: application/json
+
+{
+  "transformer_kw": 100,
+  "peak_kw": 60,
+  "is_three_phase": true,
+  "voltage": 208
+}
+
+###
+# Test 2: Single-phase 240V residential
+POST {{baseUrl}}/simulate
+Content-Type: application/json
+
+{
+  "transformer_kw": 50,
+  "peak_kw": 25,
+  "voltage": 240,
+  "is_three_phase": false
+}
+
+###
+# Test 3: High voltage 480V commercial
+POST {{baseUrl}}/simulate
+Content-Type: application/json
+
+{
+  "transformer_kw": 150,
+  "peak_kw": 80,
+  "existing_chargers": 3,
+  "charger_power_kw": 19.2,
+  "voltage": 480,
+  "safety_margin_percent": 15
+}
+
+###
+# Test 4: DC Fast Charging (50kW)
+POST {{baseUrl}}/simulate
+Content-Type: application/json
+
+{
+  "transformer_kw": 200,
+  "peak_kw": 100,
+  "charger_power_kw": 50,
+  "voltage": 480
+}
+
+###
+# Test 5: No capacity - upgrade required
+POST {{baseUrl}}/simulate
+Content-Type: application/json
+
+{
+  "transformer_kw": 100,
+  "peak_kw": 90,
+  "voltage": 480
+}
+
+# ===========================================
+# Building CRUD Tests
+# ===========================================
+# Test 6: Create commercial building
+POST {{baseUrl}}/buildings
+Content-Type: application/json
+
+{
+  "name": "Downtown Office Tower",
+  "address": "123 Main St, New York, NY 10001",
+  "building_type": "commercial",
+  "transformer_kw": 150,
+  "peak_kw": 95,
+  "existing_chargers": 4,
+  "voltage": 480
+}
+
+###
+# Test 7: Create residential building
+POST {{baseUrl}}/buildings
+Content-Type: application/json
+
+{
+  "name": "Sunset Apartments",
+  "address": "456 Oak Ave, San Francisco, CA 94102",
+  "building_type": "residential",
+  "transformer_kw": 75,
+  "peak_kw": 40,
+  "voltage": 240
+}
+
+###
+# Test 8: List all buildings
+GET {{baseUrl}}/buildings
+
+###
+# Test 9: List commercial buildings only
+GET {{baseUrl}}/buildings?building_type=commercial
+
+###
+# Test 10: Get building by ID
+GET {{baseUrl}}/buildings/1
+
+###
+# Test 11: Update building
+PUT {{baseUrl}}/buildings/1
+Content-Type: application/json
+
+{
+  "existing_chargers": 8
+}
+
+###
+# Test 12: Delete building
+DELETE {{baseUrl}}/buildings/2
+
+# ===========================================
+# Grid Stress Tests
+# ===========================================
+# Test 13: Current grid stress
+GET {{baseUrl}}/grid/stress
+
+###
+# Test 14: Grid stress with building impact
+GET {{baseUrl}}/grid/stress?building_demand_kw=150
+
+###
+# Test 15: 24-hour forecast
+GET {{baseUrl}}/grid/forecast?hours=24
+
+###
+# Test 16: Week-long forecast
+GET {{baseUrl}}/grid/forecast?hours=168
+
+# ===========================================
+# Validation Error Tests
+# ===========================================
+# Test 17: Invalid voltage (not in standard list)
+POST {{baseUrl}}/simulate
+Content-Type: application/json
+
+{
+  "transformer_kw": 100,
+  "peak_kw": 60,
+  "voltage": 220
+}
+
+###
+# Test 18: Transformer exceeds max (5000kW)
+POST {{baseUrl}}/simulate
+Content-Type: application/json
+
+{
+  "transformer_kw": 6000,
+  "peak_kw": 100
+}
+
+###
+# Test 19: Negative peak load
+POST {{baseUrl}}/simulate
+Content-Type: application/json
+
+{
+  "transformer_kw": 100,
+  "peak_kw": -10
+}
+
+###
+# Test 20: Power factor out of range
+POST {{baseUrl}}/simulate
+Content-Type: application/json
+
+{
+  "transformer_kw": 100,
+  "peak_kw": 60,
+  "power_factor": 1.5
+}
+
+###
+# Test 2: With existing chargers
+POST {{baseUrl}}/simulate
+Content-Type: application/json
+
+{
+  "transformer_kw": 100,
+  "peak_kw": 60,
+  "existing_chargers": 2,
+  "charger_power_kw": 7.2
+}
+
+###
+# Test 3: Near capacity limit
+POST {{baseUrl}}/simulate
+Content-Type: application/json
+
+{
+  "transformer_kw": 100,
+  "peak_kw": 85
+}
+
+###
+# Test 4: At capacity - requires upgrade
+POST {{baseUrl}}/simulate
+Content-Type: application/json
+
+{
+  "transformer_kw": 100,
+  "peak_kw": 95,
+  "voltage": 480
+}
+
+# ===========================================
+# Building CRUD Tests
+# ===========================================
+# Test 5: Create building
+POST {{baseUrl}}/buildings
+Content-Type: application/json
+
+{
+  "name": "Downtown Office Tower",
+  "address": "123 Main St, New York, NY 10001",
+  "building_type": "commercial",
+  "transformer_kw": 150,
+  "peak_kw": 95,
+  "existing_chargers": 4
+}
+
+###
+# Test 6: List all buildings
+GET {{baseUrl}}/buildings
+
+###
+# Test 7: Get building by ID
+GET {{baseUrl}}/buildings/1
+
+###
+# Test 8: Update building
+PUT {{baseUrl}}/buildings/1
+Content-Type: application/json
+
+{
+  "existing_chargers": 8
+}
+
+# ===========================================
+# Grid Stress Tests
+# ===========================================
+# Test 9: Get current grid stress
+GET {{baseUrl}}/grid/stress
+
+###
+# Test 10: Grid stress with building demand
+GET {{baseUrl}}/grid/stress?building_demand_kw=150
+
+###
+# Test 11: Grid forecast (24 hours)
+GET {{baseUrl}}/grid/forecast?hours=24
+
+# ===========================================
+# Validation Error Tests
+# ===========================================
+# Test 12: Invalid voltage
+POST {{baseUrl}}/simulate
+Content-Type: application/json
+
+{
+  "transformer_kw": 100,
+  "peak_kw": 60,
+  "voltage": 220
+}
+
+###
+# Test 13: Transformer exceeds max
+POST {{baseUrl}}/simulate
+Content-Type: application/json
+
+{
+  "transformer_kw": 6000,
+  "peak_kw": 100
+}

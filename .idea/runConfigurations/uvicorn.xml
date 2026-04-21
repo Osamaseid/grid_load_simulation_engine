@@ -1,0 +1,31 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run Server" type="PythonConfigurationType" factoryName="Python">
+    <module name="voltstream_api">app.main</module>
+    <option name="PARAMETERS">--host 0.0.0.0 --port 8000 --reload</option>
+    <option name="WORKING_DIRECTORY">$PROJECT_DIR$</option>
+    <option name="IS_MODULE_SDK">true</option>
+    <option name="INTERPRETER_OPTIONS">&quot;&quot;</option>
+    <option name="PARENT_ENVS">true</option>
+    <option name="SDK_HOME">$PROJECT_DIR$/.venv/Scripts/python.exe</option>
+    <option name="ENABLE_PYTEST_WATCHER">false</option>
+    <option name="USE_CONSOLE">true</option>
+    <option name="SUSPEND">false</option>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+  <configuration default="false" name="Run Tests" type="pytest" factoryName="Python tests">
+    <module name="voltstream_api">
+      <option name="USESTUB">false</option>
+      <option name="PARAMETERS">-v</option>
+      <option name="WORKING_DIRECTORY">$PROJECT_DIR$</option>
+      <option name="INTERPRETER_OPTIONS">&quot;&quot;</option>
+      <option name="PARENT_ENVS">true</option>
+      <option name="SDK_HOME">$PROJECT_DIR$/.venv/Scripts/python.exe</option>
+      <option name="ENABLE_PYTEST_WATCHER">false</option>
+      <option name="USE_CONSOLE">true</option>
+      <option name="SUSPEND">false</option>
+      <method v="2" />
+    </module>
+  </configuration>
+</component>
