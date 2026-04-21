@@ -2,6 +2,86 @@
 
 A professional-grade FastAPI backend for **EV charging infrastructure feasibility analysis** - calculates transformer capacity and recommends how many chargers a building can support.
 
+## Setup and Installation
+
+### Prerequisites
+
+- Python 3.9+
+- pip (Python package manager)
+
+### 1. Clone the Repository
+
+```bash
+git clone <repository-url>
+cd voltstream_api
+```
+
+### 2. Create Virtual Environment
+
+```bash
+# Create virtual environment
+python -m venv .venv
+
+# Activate on Windows
+.venv\Scripts\activate
+
+# Activate on macOS/Linux
+source .venv/bin/activate
+```
+
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configure Environment Variables
+
+Copy the example environment file and adjust as needed:
+
+```bash
+# Create .env file
+cp .env.example .env
+```
+
+Default settings in `.env`:
+```bash
+APP_NAME=VoltStream Grid Feasibility API
+APP_VERSION=1.0.0
+APP_HOST=0.0.0.0
+APP_PORT=8000
+DEBUG=false
+```
+
+### 5. Run the Server
+
+```bash
+uvicorn app.main:app --reload
+```
+
+The server will start at `http://localhost:8000`.
+
+### 6. Access API Documentation
+
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
+
+### Running Tests
+
+Run the test suite:
+
+```bash
+pytest -v
+```
+
+Run with coverage:
+
+```bash
+pytest --cov=app --cov-report=html
+```
+
+---
+
 ## Quick Start
 
 ```bash
